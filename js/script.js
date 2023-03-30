@@ -83,45 +83,58 @@ backBtn.addEventListener('click', function(){
 
     function generateGrid(gridId){
       const gridSizes = [10, 9, 7];
-      const bombNumber = 16;
+      const bombNumber = 0;
       const generatedID = [];
       const generatedBomb = [];
+      const scoreTrack = [];
       generateUniqueRandomIDList(1, ((gridSizes[gridId - 1]) * (gridSizes[gridId - 1])), generatedID);
       generateUniqueRandomBombList(1, ((gridSizes[gridId - 1]) * (gridSizes[gridId - 1])), bombNumber, generatedBomb);
-      const msGridContainer = generateRow(gridSizes[gridId - 1], generatedID, generatedBomb);
+      const msGridContainer = generateRow(gridSizes[gridId - 1], generatedID, generatedBomb, scoreTrack);
       msGridContainer.className = 'ms-grid-container';
       
-      //console.log(generatedBomb);
+      console.log(msGridContainer);
       return msGridContainer;
     }
 
-    function generateRow(size, generatedID, generatedBomb){
+    function generateRow(size, generatedID, generatedBomb, scoreTrack){
       const parent = document.createElement('div');
       for (let i = 0; i < size; i++) {
-        const msRow = generateCell(size, generatedID, generatedBomb);
+        const msRow = generateCell(size, generatedID, generatedBomb, scoreTrack);
         msRow.className = 'ms-row d-flex';
         parent.append(msRow);
       }
       return parent;
     }
 
-    function generateCell(size, generatedID, generatedBomb){
+    function generateCell(size, generatedID, generatedBomb, scoreTrack){
       const parent = document.createElement('div');
-      let endGameMsg;
+      //console.log(generatedBomb.length);
+      const scored = true;
+      const scoreOnClick = 10;
+      const maxScore = ((size * size) - generatedBomb.length);
+      let endGameMsg = `Complimenti!!! Hai Vinto!!!! Hai ottenuti il punteggio massimo di ${maxScore * scoreOnClick} Clicca su RICOMINCIA per giocare ancora!`;
+      console.log(maxScore);
       for (let i = 0; i < size; i++) {
         const msCell = document.createElement('div');
         msCell.className = 'ms-cell';
         msCell.cellID = generatedID.shift();
         msCell.addEventListener('click', function(){
-          this.classList.toggle('clicked');
+          this.classList.add('clicked');
+          //console.log((generatedBomb.includes(msCell.cellID)));
           if (generatedBomb.includes(msCell.cellID)) {
-            this.classList.toggle('bomb');
+            this.classList.add('bomb');
             endGameMsg = 'Peccato, hai perso. Clicca su RICOMINCIA per riprovare!' 
             generateEndGameResult(endGameMsg);
             //console.log(document.body.firstElementChild);
-            //document.body.firstElementChild.append(msDisplayResult);
+          } else {
+            if (scoreTrack.length < maxScore) {
+              scoreTrack.push(scored);
+              console.log(scoreTrack);
+            } else {
+              generateEndGameResult(endGameMsg);
+            }
           }
-          console.log(this.cellID);
+          
         });
         parent.append(msCell);
       }
