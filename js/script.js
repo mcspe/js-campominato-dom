@@ -23,6 +23,7 @@ startBtn.addEventListener('click', function(){
 backBtn.addEventListener('click', function(){
   if (container.pageID === 2){
     container.pageID = 1;
+    //console.log(container.lastChild);
     container.lastChild.remove();
     container.append(generateLevelSelector(levelsNumber, levelsDifficulty, container));
     backBtn.classList.add('d-none');
@@ -40,9 +41,10 @@ backBtn.addEventListener('click', function(){
         msLevelBtn.difficultyID = i;
         msLevelBtn.addEventListener('click', function () {
           backBtn.classList.remove('d-none');
-          msLevelSelector.classList.add('d-none');
+          //msLevelSelector.classList.add('d-none');
+          msLevelSelector.remove();
           container.pageID = 2;
-          //console.log(container.pageID);
+          //console.log(msLevelSelector);
           printBox.append(generateGrid(this.difficultyID));
         });
         msLevelSelector.append(msLevelBtn);
@@ -105,6 +107,7 @@ backBtn.addEventListener('click', function(){
 
     function generateCell(size, generatedID, generatedBomb){
       const parent = document.createElement('div');
+      let endGameMsg;
       for (let i = 0; i < size; i++) {
         const msCell = document.createElement('div');
         msCell.className = 'ms-cell';
@@ -113,7 +116,10 @@ backBtn.addEventListener('click', function(){
           this.classList.toggle('clicked');
           if (generatedBomb.includes(msCell.cellID)) {
             this.classList.toggle('bomb');
-            alert('hai perso!!');
+            endGameMsg = 'Peccato, hai perso. Clicca su RICOMINCIA per riprovare!' 
+            generateEndGameResult(endGameMsg);
+            //console.log(document.body.firstElementChild);
+            //document.body.firstElementChild.append(msDisplayResult);
           }
           console.log(this.cellID);
         });
@@ -121,6 +127,27 @@ backBtn.addEventListener('click', function(){
       }
       
       return parent;
+    }
+
+    function generateEndGameResult(endGameMsg) {
+      const displayResultContainer = document.createElement('div');
+      displayResultContainer.className = 'ms-display-result position-absolute d-flex flex-column justify-content-around align-items-center';
+      const resultMsg = document.createElement('span');
+      resultMsg.innerHTML = endGameMsg;
+      resultMsg.className = 'text-center fw-bold';
+      const startAgainBtn = document.createElement('button');
+      startAgainBtn.className = 'ms-btn ms-start';
+      startAgainBtn.innerHTML = 'Ricomincia';
+      startAgainBtn.addEventListener('click', function(){
+        container.pageID = 1;
+        container.lastChild.remove();
+        container.append(generateLevelSelector(levelsNumber, levelsDifficulty, container));
+        backBtn.classList.add('d-none');
+        console.log(this.parentElement);
+        this.parentElement.remove();
+      });
+      displayResultContainer.append(resultMsg, startAgainBtn);
+      document.body.firstElementChild.append(displayResultContainer);
     }
 
     function generateUniqueRandomIDList(min, max, generatedID) {
