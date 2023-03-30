@@ -15,7 +15,6 @@ const backBtn = document.querySelector('.ms-btn.ms-back');
  /************ LOGICA ************/
 startBtn.addEventListener('click', function(){
   startBtn.classList.add('d-none');
-  backBtn.classList.remove('d-none');
   container.pageID = 1;
   //console.log(container.pageID);
   container.append(generateLevelSelector(levelsNumber, levelsDifficulty, container));
@@ -23,17 +22,11 @@ startBtn.addEventListener('click', function(){
 });
 
 backBtn.addEventListener('click', function(){
-  if (container.pageID === 1) {
-    container.pageID = 0;
-    // container.lastElementChild.remove();
-    container.lastChild.remove();
-    startBtn.classList.remove('d-none');
-    backBtn.classList.add('d-none');
-    //console.log(containerDefault, startBtn, container);
-  } else if (container.pageID === 2){
+  if (container.pageID === 2){
     container.pageID = 1;
     container.lastChild.remove();
     container.append(generateLevelSelector(levelsNumber, levelsDifficulty, container));
+    backBtn.classList.add('d-none');
   }
 });
 
@@ -47,6 +40,7 @@ backBtn.addEventListener('click', function(){
         msLevelBtn.className = `ms-btn ms-level ms-level-${i}`;
         msLevelBtn.difficultyID = i;
         msLevelBtn.addEventListener('click', function () {
+          backBtn.classList.remove('d-none');
           msLevelSelector.classList.add('d-none');
           container.pageID = 2;
           //console.log(container.pageID);
@@ -87,7 +81,7 @@ backBtn.addEventListener('click', function(){
     }
 
     function generateGrid(gridId){
-      const gridSizes = [7, 9, 10]
+      const gridSizes = [10, 9, 7]
       const generatedID = [];
       generateUniqueRandomIDList(1, ((gridSizes[gridId - 1]) * (gridSizes[gridId - 1])), generatedID);
       const msGridContainer = generateRow(gridSizes[gridId - 1], generatedID);
