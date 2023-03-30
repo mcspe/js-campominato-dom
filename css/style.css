@@ -42,3 +42,8 @@
 .ms-cell.clicked{
   background: lightseagreen;
 }
+
+.ms-cell.clicked.bomb{
+  background: url(../img/bomba.png);
+  background-size: cover;
+}

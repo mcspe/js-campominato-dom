@@ -109,6 +109,7 @@ backBtn.addEventListener('click', function(){
         msCell.cellID = generatedID.shift();
         msCell.addEventListener('click', function(){
           this.classList.toggle('clicked');
+          this.classList.toggle('bomb');
           console.log(this.cellID);
         });
         parent.append(msCell);
