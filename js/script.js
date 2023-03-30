@@ -7,7 +7,6 @@ const levelsDifficulty = [
 const levelsNumber = 3;
 const container = document.querySelector('.ms-container');
 container.pageID = 0;
-const containerDefault = container.innerHTML;
 const startBtn = document.querySelector('.ms-btn.ms-start');
 const backBtn = document.querySelector('.ms-btn.ms-back');
 
@@ -81,27 +80,30 @@ backBtn.addEventListener('click', function(){
     }
 
     function generateGrid(gridId){
-      const gridSizes = [10, 9, 7]
+      const gridSizes = [10, 9, 7];
+      const bombNumber = 16;
       const generatedID = [];
+      const generatedBomb = [];
       generateUniqueRandomIDList(1, ((gridSizes[gridId - 1]) * (gridSizes[gridId - 1])), generatedID);
-      const msGridContainer = generateRow(gridSizes[gridId - 1], generatedID);
+      generateUniqueRandomBombList(1, ((gridSizes[gridId - 1]) * (gridSizes[gridId - 1])), bombNumber, generatedBomb);
+      const msGridContainer = generateRow(gridSizes[gridId - 1], generatedID, generatedBomb);
       msGridContainer.className = 'ms-grid-container';
       
-      //console.log(generatedID);
+      //console.log(generatedBomb);
       return msGridContainer;
     }
 
-    function generateRow(size, generatedID){
+    function generateRow(size, generatedID, generatedBomb){
       const parent = document.createElement('div');
       for (let i = 0; i < size; i++) {
-        const msRow = generateCell(size, generatedID);
+        const msRow = generateCell(size, generatedID, generatedBomb);
         msRow.className = 'ms-row d-flex';
         parent.append(msRow);
       }
       return parent;
     }
 
-    function generateCell(size, generatedID){
+    function generateCell(size, generatedID, generatedBomb){
       const parent = document.createElement('div');
       for (let i = 0; i < size; i++) {
         const msCell = document.createElement('div');
@@ -109,7 +111,10 @@ backBtn.addEventListener('click', function(){
         msCell.cellID = generatedID.shift();
         msCell.addEventListener('click', function(){
           this.classList.toggle('clicked');
-          this.classList.toggle('bomb');
+          if (generatedBomb.includes(msCell.cellID)) {
+            this.classList.toggle('bomb');
+            alert('hai perso!!');
+          }
           console.log(this.cellID);
         });
         parent.append(msCell);
@@ -124,6 +129,14 @@ backBtn.addEventListener('click', function(){
         generatedID.push(selectedID);
       }
       //console.log(generatedID);
+    }
+
+    function generateUniqueRandomBombList(min, max, bombNumber, generatedBomb) {
+      for (i = 0; i < bombNumber; i++) {
+        const selectedBomb = generateUniqueRandomID(min, max, generatedBomb);
+        generatedBomb.push(selectedBomb);
+      }
+      //console.log(generatedBomb);
     }
 
     function generateUniqueRandomID(min, max, generatedID) {
