@@ -25,6 +25,7 @@ backBtn.addEventListener('click', function(){
     container.pageID = 1;
     //console.log(container.lastChild);
     container.lastChild.remove();
+    document.body.firstElementChild.lastElementChild.remove();
     container.append(generateLevelSelector(levelsNumber, levelsDifficulty, container));
     backBtn.classList.add('d-none');
   }
@@ -83,7 +84,7 @@ backBtn.addEventListener('click', function(){
 
     function generateGrid(gridId){
       const gridSizes = [10, 9, 7];
-      const bombNumber = 0;
+      const bombNumber = 16;
       const generatedID = [];
       const generatedBomb = [];
       const scoreTrack = [];
@@ -91,8 +92,14 @@ backBtn.addEventListener('click', function(){
       generateUniqueRandomBombList(1, ((gridSizes[gridId - 1]) * (gridSizes[gridId - 1])), bombNumber, generatedBomb);
       const msGridContainer = generateRow(gridSizes[gridId - 1], generatedID, generatedBomb, scoreTrack);
       msGridContainer.className = 'ms-grid-container';
-      
-      console.log(msGridContainer);
+      const scoreDisplay = document.createElement('div');
+      scoreDisplay.className = 'ms-display-score position-absolute d-flex flex-column justify-content-center align-items-center';
+      const scoreDisplayLabel = document.createElement('span');
+      scoreDisplayLabel.innerHTML = 'PUNTEGGIO';
+      const scoreDisplayPoints = document.createElement('span');
+      scoreDisplay.append(scoreDisplayLabel, scoreDisplayPoints);
+      document.body.firstElementChild.append(scoreDisplay);
+      //console.log(msGridContainer);
       return msGridContainer;
     }
 
@@ -107,21 +114,22 @@ backBtn.addEventListener('click', function(){
     }
 
     function generateCell(size, generatedID, generatedBomb, scoreTrack){
-      const parent = document.createElement('div');
+      const parent = document.createElement('div');      
       //console.log(generatedBomb.length);
       //const scored = true;
       const scoreOnClick = 10;
+      let scoreAdd = 0;
       const maxScore = ((size * size) - generatedBomb.length);
-      let endGameMsg = `Complimenti!!! Hai Vinto!!!! Hai ottenuti il punteggio massimo di ${maxScore * scoreOnClick} Clicca su RICOMINCIA per giocare ancora!`;
-      console.log(maxScore);
+      let endGameMsg = `Complimenti!!! Hai Vinto!!!! Hai ottenuto il punteggio massimo di ${maxScore * scoreOnClick} Clicca su RICOMINCIA per giocare ancora!`;
+      //console.log(maxScore);
       for (let i = 0; i < size; i++) {
         const msCell = document.createElement('div');
         msCell.className = 'ms-cell';
+        //console.log(generatedBomb, generatedID);
         msCell.cellID = generatedID.shift();
         msCell.scored = false;
         msCell.addEventListener('click', function(){
           this.classList.add('clicked');
-          //console.log((generatedBomb.includes(msCell.cellID)));
           if (generatedBomb.includes(msCell.cellID)) {
             this.classList.add('bomb');
             endGameMsg = 'Peccato, hai perso. Clicca su RICOMINCIA per riprovare!' 
@@ -132,8 +140,9 @@ backBtn.addEventListener('click', function(){
               if (this.scored === false) {
                 this.scored = true;
                 scoreTrack.push(this.scored);
-                console.log(this.scored);
-                console.log(scoreTrack);
+                scoreAdd = scoreTrack.length * scoreOnClick;
+                document.body.firstElementChild.lastElementChild.lastElementChild.innerHTML = scoreAdd;
+                //console.log(scoreTrack);
               }
             } else {
               generateEndGameResult(endGameMsg);
@@ -159,10 +168,12 @@ backBtn.addEventListener('click', function(){
       startAgainBtn.addEventListener('click', function(){
         container.pageID = 1;
         container.lastChild.remove();
+        //console.log(document.body.firstElementChild.firstElementChild);
         container.append(generateLevelSelector(levelsNumber, levelsDifficulty, container));
         backBtn.classList.add('d-none');
-        console.log(this.parentElement);
+        //console.log(this.parentElement);
         this.parentElement.remove();
+        document.body.firstElementChild.lastElementChild.remove();
       });
       displayResultContainer.append(resultMsg, startAgainBtn);
       document.body.firstElementChild.append(displayResultContainer);
