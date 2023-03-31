@@ -109,7 +109,7 @@ backBtn.addEventListener('click', function(){
     function generateCell(size, generatedID, generatedBomb, scoreTrack){
       const parent = document.createElement('div');
       //console.log(generatedBomb.length);
-      const scored = true;
+      //const scored = true;
       const scoreOnClick = 10;
       const maxScore = ((size * size) - generatedBomb.length);
       let endGameMsg = `Complimenti!!! Hai Vinto!!!! Hai ottenuti il punteggio massimo di ${maxScore * scoreOnClick} Clicca su RICOMINCIA per giocare ancora!`;
@@ -118,6 +118,7 @@ backBtn.addEventListener('click', function(){
         const msCell = document.createElement('div');
         msCell.className = 'ms-cell';
         msCell.cellID = generatedID.shift();
+        msCell.scored = false;
         msCell.addEventListener('click', function(){
           this.classList.add('clicked');
           //console.log((generatedBomb.includes(msCell.cellID)));
@@ -127,9 +128,13 @@ backBtn.addEventListener('click', function(){
             generateEndGameResult(endGameMsg);
             //console.log(document.body.firstElementChild);
           } else {
-            if (scoreTrack.length < maxScore) {
-              scoreTrack.push(scored);
-              console.log(scoreTrack);
+            if (scoreTrack.length < maxScore - 1) {
+              if (this.scored === false) {
+                this.scored = true;
+                scoreTrack.push(this.scored);
+                console.log(this.scored);
+                console.log(scoreTrack);
+              }
             } else {
               generateEndGameResult(endGameMsg);
             }
